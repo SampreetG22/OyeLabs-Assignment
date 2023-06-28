@@ -1,0 +1,19 @@
+###Server checking request
+GET http://localhost:3000/
+
+###Admin Login Request
+POST http://localhost:3000/login
+Content-Type: application/json
+{
+  "phoneNumber": "454115515",
+  "password": "admin123"
+}
+
+###Customer adding request
+POST http://localhost:3000/addCustomer
+Content-Type: application/json
+{
+  "name": "OyeLabs",
+  "phoneNumber": "6396857452",
+  "password": "customer123"
+}
