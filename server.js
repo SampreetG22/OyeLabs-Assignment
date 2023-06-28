@@ -5,11 +5,8 @@ const sqlite3 = require("sqlite3");
 const app = express();
 app.use(express.json());
 const bcrypt = require("bcrypt");
-
 const dbPath = path.join(__dirname, "customer.db"); //Assuming customer.db contains all customer details
-
 let db = null;
-
 const initializeDBAndServer = async () => {
   try {
     db = await open({
@@ -24,7 +21,6 @@ const initializeDBAndServer = async () => {
     process.exit(1);
   }
 };
-
 initializeDBAndServer();
 
 //Validating Admin credentials for authentication
@@ -37,7 +33,7 @@ app.post("/login", async (request, response) => {
     FROM 
         customer
     WHERE 
-    phoneNumber = '${phoneNumber}';`;
+      phoneNumber = '${phoneNumber}';`;
   const userValidity = await db.get(confirmPhoneNumber);
   if (userValidity === undefined) {
     //If userValidity is not undefined, then login is legitimate
