@@ -3,6 +3,8 @@ const path = require("path");
 const { open } = require("sqlite");
 const sqlite3 = require("sqlite3");
 const app = express();
+app.use(express.json());
+const bcrypt = require("bcrypt");
 
 const dbPath = path.join(__dirname, "customer.db"); //Assuming customer.db contains all customer details
 
@@ -25,10 +27,6 @@ const initializeDBAndServer = async () => {
 
 initializeDBAndServer();
 
-app.listen(3000, () => {
-  console.log("Server started on http://localhost:3000");
-});
-
 //Validating Admin credentials for authentication
 app.post("/login", async (request, response) => {
   const { phoneNumber, password } = request.body; //Destructuring login details from request body object
@@ -40,7 +38,7 @@ app.post("/login", async (request, response) => {
         customer
     WHERE 
     phoneNumber = '${phoneNumber}';`;
-  const userValidity = await dataBase.get(confirmPhoneNumber);
+  const userValidity = await db.get(confirmPhoneNumber);
   if (userValidity === undefined) {
     //If userValidity is not undefined, then login is legitimate
     response.status(400);
@@ -72,14 +70,14 @@ app.post("/addCustomer", async (request, response) => {
         customer
     WHERE 
         phoneNumber = '${phoneNumber}';`;
-  const userValidity = await dataBase.get(confirmPhoneNumber);
+  const userValidity = await db.get(confirmPhoneNumber);
   if (userValidity === undefined) {
     //if userValidity is undefined, then there are no duplicates in the DB
     const addingUserDetails = `
         INSERT 
           INTO customer (name, phoneNumber)
         VALUES ('${name}''${phoneNumber}','${encryptedPassword}');`;
-    const dbResponse = await dataBase.run(addingUserDetails);
+    const dbResponse = await db.run(addingUserDetails);
     response.send("User created successfully");
   } else {
     response.status(400);
